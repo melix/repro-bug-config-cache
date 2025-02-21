@@ -17,8 +17,6 @@ package repro;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.file.RegularFile;
-import org.gradle.api.provider.Provider;
 
 import java.util.List;
 
@@ -29,17 +27,7 @@ public class MyPlugin implements Plugin<Project> {
         myExt.getSpecNames().convention(List.of("foo.txt", "bar.txt"));
         myExt.getSpecsDir().convention(project.getLayout().getProjectDirectory().dir("specs"));
         var myTask = project.getTasks().register("myTask", MyTask.class, task -> {
-            task.getSpecs().from(lazySpecs(myExt));
             task.getOutputFile().convention(project.getLayout().getBuildDirectory().file("specs.txt"));
         });
-    }
-
-    private Provider<List<RegularFile>> lazySpecs(MyExtension myExt) {
-        var specNames = myExt.getSpecNames();
-        var specsDir = myExt.getSpecsDir();
-        return specsDir.zip(specNames, (dir, names) -> names.stream()
-            .map(dir::file)
-            .toList()
-        );
     }
 }
