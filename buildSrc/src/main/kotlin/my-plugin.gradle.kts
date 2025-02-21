@@ -1,0 +1,3 @@
+import repro.*
+
+apply<MyPlugin>()
